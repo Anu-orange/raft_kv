@@ -669,16 +669,18 @@ void Raft::RequestVote(const raftRpcProctoc::RequestVoteArgs* args, raftRpcProct
   }
   myAssert(args->term() == m_currentTerm,
            format("[func--rf{%d}] 前面校验过args.Term==rf.currentTerm，这里却不等", m_me));
-<<<<<<< HEAD
+
   //现在节点任期都是相同的(任期小的也已经更新到新的args的term了)
   //要检查log的term和index是不是匹配的了
   //获取的应该是索引，就算是这个变量，但是下面不能用Candidate的Term和索引比呀，有点懵
-  int lastLogTerm = getLastLogIndex();
-=======
+
   //	现在节点任期都是相同的(任期小的也已经更新到新的args的term了)，还需要检查log的term和index是不是匹配的了
 
+  int lastLogIndex = getLastLogIndex();
+
+
   int lastLogTerm = getLastLogTerm();
->>>>>>> public/main
+
   //只有没投票，且candidate的日志的新的程度 ≥ 接受者的日志新的程度 才会授票
   if (!UpToDate(args->lastlogindex(), args->lastlogterm())) {
     //  UpToDate返回false，说明 candidate最新日志项的term小于follower最新日志项的term，或者两者相等
@@ -686,12 +688,11 @@ void Raft::RequestVote(const raftRpcProctoc::RequestVoteArgs* args, raftRpcProct
     // args.LastLogTerm < lastLogTerm || (args.LastLogTerm == lastLogTerm && args.LastLogIndex < lastLogIndex) {
     //日志太旧了
     if (args->lastlogterm() < lastLogTerm) {
-                          DPrintf("[	    func-RequestVote-rf(%v)		] : refuse voted rf[%v] ,because candidate_lastlog_term{%v} < lastlog_term{%v}\n", rf.me, args.CandidateId, args.LastLogTerm,
-                          lastLogTerm);
+//                          DPrintf("[	    func-RequestVote-rf(%v)		] : refuse voted rf[%v] ,because candidate_lastlog_term{%v} < lastlog_term{%v}\n", rf.me, args.CandidateId, args.LastLogTerm,
+//                          lastLogTerm);
     } else {
-      //            DPrintf("[	    func-RequestVote-rf(%v)		] : refuse voted rf[%v] ,because
-      //            candidate_log_index{%v} < log_index{%v}\n", rf.me, args.CandidateId, args.LastLogIndex,
-      //            rf.getLastLogIndex())
+//                  DPrintf("[	    func-RequestVote-rf(%v)		] : refuse voted rf[%v] ,becaus candidate_log_index{%v} < log_index{%v}\n", rf.me, args.CandidateId, args.LastLogIndex,
+//                  rf.getLastLogIndex())
     }
     //设置term值
     reply->set_term(m_currentTerm);
@@ -847,7 +848,7 @@ bool Raft::sendRequestVote(int server, std::shared_ptr<raftRpcProctoc::RequestVo
   }else if(reply->term() < m_currentTerm){
       return true;
   }
-  myAssert(reply->term() == m_currentTerm, format("assert {reply.Term == rf.currentTerm} fail"));
+  myAssert(reply->term() == m_currentTerm, format("assert {reply.Term ==    rf.currentTerm} fail"));
 
   if(!reply->votegranted()){
       return true;
