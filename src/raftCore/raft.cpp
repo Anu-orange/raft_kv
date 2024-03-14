@@ -669,10 +669,16 @@ void Raft::RequestVote(const raftRpcProctoc::RequestVoteArgs* args, raftRpcProct
   }
   myAssert(args->term() == m_currentTerm,
            format("[func--rf{%d}] 前面校验过args.Term==rf.currentTerm，这里却不等", m_me));
+<<<<<<< HEAD
   //现在节点任期都是相同的(任期小的也已经更新到新的args的term了)
   //要检查log的term和index是不是匹配的了
   //获取的应该是索引，就算是这个变量，但是下面不能用Candidate的Term和索引比呀，有点懵
   int lastLogTerm = getLastLogIndex();
+=======
+  //	现在节点任期都是相同的(任期小的也已经更新到新的args的term了)，还需要检查log的term和index是不是匹配的了
+
+  int lastLogTerm = getLastLogTerm();
+>>>>>>> public/main
   //只有没投票，且candidate的日志的新的程度 ≥ 接受者的日志新的程度 才会授票
   if (!UpToDate(args->lastlogindex(), args->lastlogterm())) {
     //  UpToDate返回false，说明 candidate最新日志项的term小于follower最新日志项的term，或者两者相等
@@ -748,7 +754,11 @@ void Raft::getLastLogIndexAndTerm(int* lastLogIndex, int* lastLogTerm) {
     return;
   }
 }
-
+/**
+ *
+ * @return 最新的log的logindex，即log的逻辑index。区别于log在m_logs中的物理index
+ * 可见：getLastLogIndexAndTerm()
+ */
 int Raft::getLastLogIndex() {
   int lastLogIndex = -1;
   int _ = -1;
@@ -756,6 +766,18 @@ int Raft::getLastLogIndex() {
   return lastLogIndex;
 }
 
+int Raft::getLastLogTerm() {
+  int _ = -1;
+  int lastLogTerm = -1;
+  getLastLogIndexAndTerm(&_, &lastLogTerm);
+  return lastLogTerm;
+}
+
+/**
+ *
+ * @param logIndex log的逻辑index。注意区别于m_logs的物理index
+ * @return
+ */
 int Raft::getLogTermFromLogIndex(int logIndex) {
   myAssert(logIndex >= m_lastSnapshotIncludeIndex,
            format("[func-getSlicesIndexFromLogIndex-rf{%d}]  index{%d} < rf.lastSnapshotIncludeIndex{%d}", m_me,
