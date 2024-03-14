@@ -61,6 +61,7 @@ void DPrintf(const char *format, ...) {
     va_start(args, format);
     std::printf("[%d-%d-%d-%d-%d-%d] ", nowtm->tm_year + 1900, nowtm->tm_mon + 1, nowtm->tm_mday, nowtm->tm_hour,
                 nowtm->tm_min, nowtm->tm_sec);
+    //按照format格式化输出
     std::vprintf(format, args);
     std::printf("\n");
     va_end(args);

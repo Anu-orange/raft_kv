@@ -19,7 +19,12 @@ bool RaftRpcUtil::InstallSnapshot(raftRpcProctoc::InstallSnapshotRequest *args,
   stub_->InstallSnapshot(&controller, args, response, nullptr);
   return !controller.Failed();
 }
-
+/**
+ * rpc发起请求函数
+ * @param args 请求参数
+ * @param response 远处节点的响应
+ * @return
+ */
 bool RaftRpcUtil::RequestVote(raftRpcProctoc::RequestVoteArgs *args, raftRpcProctoc::RequestVoteReply *response) {
   MprpcController controller;
   stub_->RequestVote(&controller, args, response, nullptr);

@@ -45,7 +45,7 @@ add_custom_target(format
         COMMAND bash ${PROJECT_SOURCE_DIR}/format.sh
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMAND echo "format done!"
-)
+        )
 
 
 # 添加格式化目标 end
